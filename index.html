@@ -15,6 +15,10 @@
       text-align: center;
       margin-bottom: 30px;
     }
+    h2 {
+      text-align: center;
+      margin-top: 40px;
+    }
     .scoreboard {
       max-width: 600px;
       margin: auto;
@@ -38,55 +42,104 @@
     .score {
       font-size: 18px;
     }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      border-bottom: 1px solid #ddd;
+      padding: 10px;
+      text-align: left;
+    }
   </style>
 </head>
 <body>
+
   <h1>Wallaroo Cricket Challenge Scores</h1>
 
-  <div class="scoreboard">
-    <div class="team">
+  <div class="scoreboard" id="scoreboard">
+    <div class="team" data-score="0">
       <div class="team-name">be rad's bazookas</div>
       <div class="score">0</div>
     </div>
-    <div class="team">
+    <div class="team" data-score="0">
       <div class="team-name">V's Vultures</div>
       <div class="score">0</div>
     </div>
-    <div class="team">
-      <div class="team-name">complete the entry form to see your team here :)</div>
+    <div class="team" data-score="0">
+      <div class="team-name">Dazzlers</div>
       <div class="score">0</div>
     </div>
-    <div class="team">
-      <div class="team-name">complete the entry form to see your team here :)</div>
+    <div class="team" data-score="0">
+      <div class="team-name">Mac Attack</div>
+      <div class="score">0</div>
+    </div>
+    <div class="team" data-score="0">
+      <div class="team-name">NedStars</div>
+      <div class="score">0</div>
+    </div>
+    <div class="team" data-score="0">
+      <div class="team-name">Sophie's Silly Sigmas</div>
+      <div class="score">0</div>
+    </div>
+    <div class="team" data-score="0">
+      <div class="team-name">Ali's Fine Legs</div>
+      <div class="score">0</div>
+    </div>
+    <div class="team" data-score="0">
+      <div class="team-name">Ashleigh's Team of 10s</div>
+      <div class="score">0</div>
+    </div>
+    <div class="team" data-score="0">
+      <div class="team-name">Judah's Dad's Dynasty</div>
+      <div class="score">0</div>
+    </div>
+    <div class="team" data-score="0">
+      <div class="team-name">zhou’s willian mxdkns</div>
       <div class="score">0</div>
     </div>
   </div>
 
-  <h2 style="text-align:center;margin-top:40px;">Previous Winners and Losers</h2>
+  <h2>Previous Winners and Losers</h2>
   <div class="scoreboard">
-    <table style="width:100%; border-collapse: collapse;">
+    <table>
       <thead>
         <tr>
-          <th style="border-bottom:1px solid #ddd; padding:10px; text-align:left;">Year</th>
-          <th style="border-bottom:1px solid #ddd; padding:10px; text-align:left;">Winner</th>
-          <th style="border-bottom:1px solid #ddd; padding:10px; text-align:left;">Loser</th>
+          <th>Year</th>
+          <th>Winner</th>
+          <th>Loser</th>
         </tr>
       </thead>
       <tbody>
         <tr>
-          <td style="padding:10px;">2024</td>
-          <td style="padding:10px; font-weight:bold;">be rad's bazookas</td>
-          <td style="padding:10px; font-weight:bold;">Verona's Vipers</td>
+          <td>2024</td>
+          <td><strong>be rad's bazookas</strong></td>
+          <td><strong>Verona's Vipers</strong></td>
         </tr>
       </tbody>
     </table>
   </div>
 
-  <h2 style="text-align:center;margin-top:40px;">Official WCC Laws of the Game</h2>
+  <h2>Official WCC Laws of the Game</h2>
   <div class="scoreboard" style="text-align:center;">
     <p>The official ruleset for the Wallaroo Cricket Challenge is available below:</p>
-    <p><a href="Wallaroo Cricket Challenge_ Laws of the Game.pdf" target="_blank" style="font-weight:bold; text-decoration:underline;">Download the Official WCC Laws of the Game (PDF)</a></p>
+    <p>
+      <a href="Wallaroo Cricket Challenge_ Laws of the Game.pdf"
+         target="_blank"
+         style="font-weight:bold; text-decoration:underline;">
+        Download the Official WCC Laws of the Game (PDF)
+      </a>
+    </p>
   </div>
+
+  <script>
+    const scoreboard = document.getElementById("scoreboard");
+    const teams = Array.from(scoreboard.children);
+
+    teams
+      .sort((a, b) => b.dataset.score - a.dataset.score)
+      .forEach(team => scoreboard.appendChild(team));
+  </script>
 
 </body>
 </html>
