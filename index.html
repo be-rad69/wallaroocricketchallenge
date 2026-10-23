@@ -1,146 +1,529 @@
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Wallaroo Cricket Challenge Scores</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Airley &amp; Brad’s Market Search</title>
+
   <style>
+    :root {
+      --ink: #292820;
+      --muted: #77766c;
+      --paper: #fffdf7;
+      --cream: #f5f0e4;
+      --line: #e7dfcf;
+      --green: #526b4c;
+      --green-light: #e8eee2;
+      --pink: #d98e9c;
+      --pink-light: #f8e9ec;
+      --gold: #d4a94f;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
       margin: 0;
-      padding: 20px;
+      padding: 28px 16px 44px;
+      background: var(--cream);
+      color: var(--ink);
+      font-family: ui-rounded, "Avenir Next", Avenir, "Segoe UI", sans-serif;
     }
+
+    .page {
+      width: min(760px, 100%);
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      padding: 28px 18px 24px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 24px 24px 10px 10px;
+      box-shadow: 0 5px 0 rgba(61, 51, 30, .04);
+    }
+
     h1 {
-      text-align: center;
-      margin-bottom: 30px;
-    }
-    h2 {
-      text-align: center;
-      margin-top: 40px;
-    }
-    .scoreboard {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(29px, 6vw, 43px);
+      line-height: 1.08;
+      font-weight: 700;
+      margin: 0 auto 12px;
       max-width: 600px;
-      margin: auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    .team {
+
+    .subtitle {
+      color: var(--muted);
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .progress-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px;
+      align-items: center;
+      background: var(--green);
+      color: white;
+      padding: 17px 20px;
+      margin: 14px 0;
+      border-radius: 12px;
+    }
+
+    .progress-title {
+      font-weight: 750;
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .track {
+      height: 8px;
+      background: rgba(255,255,255,.25);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .fill {
+      width: 0%;
+      height: 100%;
+      background: #f2d58c;
+      border-radius: inherit;
+      transition: width .2s ease;
+    }
+
+    .progress-count {
+      font-variant-numeric: tabular-nums;
+      font-size: 21px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .list-heading {
       display: flex;
       justify-content: space-between;
-      padding: 10px 0;
-      border-bottom: 1px solid #ddd;
+      align-items: end;
+      gap: 10px;
+      padding: 6px 3px 10px;
     }
-    .team:last-child {
-      border-bottom: none;
+
+    .list-heading h2 {
+      margin: 0;
+      font-family: Georgia, serif;
+      font-size: 22px;
     }
-    .team-name {
-      font-weight: bold;
+
+    .list-heading p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
     }
-    .score {
-      font-size: 18px;
+
+    .table-wrap {
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      background: var(--paper);
     }
-    table {
-      width: 100%;
-      border-collapse: collapse;
+
+    .table-head, .task {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 76px 76px;
+      align-items: center;
     }
-    th, td {
-      border-bottom: 1px solid #ddd;
-      padding: 10px;
-      text-align: left;
+
+    .table-head {
+      background: #f0eadb;
+      padding: 12px 14px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .person { text-align: center; }
+    .person.brad { color: var(--green); }
+    .person.airley { color: #b55e70; }
+
+    .task {
+      padding: 14px;
+      border-top: 1px solid var(--line);
+      min-height: 75px;
+      gap: 8px;
+    }
+
+    .task-name {
+      display: flex;
+      gap: 11px;
+      align-items: flex-start;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 27px;
+      height: 27px;
+      border-radius: 9px;
+      background: var(--green-light);
+      color: var(--green);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .task:nth-child(even) .number {
+      background: var(--pink-light);
+      color: #b55e70;
+    }
+
+    .task.done {
+      background: #fbfaf4;
+    }
+
+    .task.done .task-label {
+      color: var(--muted);
+      text-decoration: line-through;
+      text-decoration-thickness: 1px;
+    }
+
+    .check-cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    input[type="checkbox"] {
+      appearance: none;
+      -webkit-appearance: none;
+      width: 27px;
+      height: 27px;
+      margin: 0;
+      border: 2px solid #b9b5a8;
+      border-radius: 8px;
+      background: white;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+      transition: .15s ease;
+    }
+
+    .check-cell.brad input:checked {
+      background: var(--green);
+      border-color: var(--green);
+    }
+
+    .check-cell.airley input:checked {
+      background: var(--pink);
+      border-color: var(--pink);
+    }
+
+    input[type="checkbox"]:checked::after {
+      content: "✓";
+      color: white;
+      font-size: 19px;
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    input[type="checkbox"]:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .footer-note {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    button {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 13px;
+      background: var(--paper);
+      color: var(--ink);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    button:hover { border-color: #b8ad93; }
+
+    .toast {
+      min-height: 18px;
+      color: var(--green);
+      font-size: 12px;
+      text-align: center;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 440px) {
+      body { padding: 14px 9px 28px; }
+
+      header { padding: 23px 12px 20px; }
+
+      .table-head, .task {
+        grid-template-columns: minmax(0, 1fr) 57px 57px;
+      }
+
+      .table-head { padding: 11px 10px; }
+
+      .task {
+        padding: 13px 10px;
+        gap: 4px;
+      }
+
+      .task-name {
+        gap: 8px;
+        font-size: 13px;
+      }
+
+      .number {
+        flex-basis: 24px;
+        height: 24px;
+      }
+
+      input[type="checkbox"] {
+        width: 25px;
+        height: 25px;
+      }
+
+      .list-heading h2 { font-size: 20px; }
+      .footer { align-items: flex-start; }
     }
   </style>
 </head>
+
 <body>
+  <main class="page">
+    <header>
+      <h1>Airley &amp; Brad’s<br>Market Search</h1>
+      <p class="subtitle">
+        Seven missions. One market date.
+      </p>
+    </header>
 
-  <h1>Wallaroo Cricket Challenge Scores</h1>
+    <section class="progress-card" aria-label="Overall progress">
+      <div>
+        <div class="progress-title" id="progress-label">
+          Your market search is ready to begin
+        </div>
+        <div class="track" aria-hidden="true">
+          <div class="fill" id="progress-fill"></div>
+        </div>
+      </div>
+      <div class="progress-count" id="progress-count">0 / 14</div>
+    </section>
 
-  <div class="scoreboard" id="scoreboard">
-    <div class="team" data-score="198.9">
-      <div class="team-name">be rad's bazookas</div>
-      <div class="score">198.9</div>
+    <div class="list-heading">
+      <h2>The checklist</h2>
+      <p>Tick your own column when done</p>
     </div>
-    <div class="team" data-score="365.5">
-      <div class="team-name">V's Vultures</div>
-      <div class="score">365.6</div>
-    </div>
-    <div class="team" data-score="166.3">
-      <div class="team-name">Dazzlers</div>
-      <div class="score">166.3</div>
-    </div>
-    <div class="team" data-score="264.3">
-      <div class="team-name">Mac Attack</div>
-      <div class="score">264.3</div>
-    </div>
-    <div class="team" data-score="349.6">
-      <div class="team-name">NedStars</div>
-      <div class="score">349.6</div>
-    </div>
-    <div class="team" data-score="64.5">
-      <div class="team-name">Sophie's Silly Sigmas</div>
-      <div class="score">64.5</div>
-    </div>
-    <div class="team" data-score="187.8">
-      <div class="team-name">Ali's Fine Legs</div>
-      <div class="score">187.8</div>
-    </div>
-    <div class="team" data-score="171.5">
-      <div class="team-name">Ashleigh's Team of 10s</div>
-      <div class="score">171.5</div>
-    </div>
-    <div class="team" data-score="333.3">
-      <div class="team-name">Judah's Dad's Dynasty</div>
-      <div class="score">333.3</div>
-    </div>
-    <div class="team" data-score="424.7">
-      <div class="team-name">zhou’s willian mxdkns</div>
-      <div class="score">424.7</div>
-    </div>
-  </div>
 
-  <h2>Previous Winners and Losers</h2>
-  <div class="scoreboard">
-    <table>
-      <thead>
-        <tr>
-          <th>Year</th>
-          <th>Winner</th>
-          <th>Loser</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>2024</td>
-          <td><strong>be rad's bazookas</strong></td>
-          <td><strong>Verona's Vipers</strong></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <section class="table-wrap" aria-label="Market search checklist">
+      <div class="table-head">
+        <div>THE MISSION</div>
+        <div class="person brad">Brad</div>
+        <div class="person airley">Airley</div>
+      </div>
 
-  <h2>Official WCC Laws of the Game</h2>
-  <div class="scoreboard" style="text-align:center;">
-    <p>The official ruleset for the Wallaroo Cricket Challenge is available below:</p>
-    <p>
-      <a href="Wallaroo Cricket Challenge_ Laws of the Game.pdf"
-         target="_blank"
-         style="font-weight:bold; text-decoration:underline;">
-        Download the Official WCC Laws of the Game (PDF)
-      </a>
-    </p>
-  </div>
+      <div id="tasks">
+        <div class="task" data-task="0">
+          <div class="task-name">
+            <span class="number">01</span>
+            <span class="task-label">Find the coolest thing that’s blue</span>
+          </div>
+          <div class="check-cell brad">
+            <input type="checkbox" aria-label="Brad: Find the coolest thing that’s blue">
+          </div>
+          <div class="check-cell airley">
+            <input type="checkbox" aria-label="Airley: Find the coolest thing that’s blue">
+          </div>
+        </div>
+
+        <div class="task" data-task="1">
+          <div class="task-name">
+            <span class="number">02</span>
+            <span class="task-label">Find something that reminds you of the other person</span>
+          </div>
+          <div class="check-cell brad">
+            <input type="checkbox" aria-label="Brad: Find something that reminds you of the other person">
+          </div>
+          <div class="check-cell airley">
+            <input type="checkbox" aria-label="Airley: Find something that reminds you of the other person">
+          </div>
+        </div>
+
+        <div class="task" data-task="2">
+          <div class="task-name">
+            <span class="number">03</span>
+            <span class="task-label">Find what you think the other person would like for dinner</span>
+          </div>
+          <div class="check-cell brad">
+            <input type="checkbox" aria-label="Brad: Find what you think the other person would like for dinner">
+          </div>
+          <div class="check-cell airley">
+            <input type="checkbox" aria-label="Airley: Find what you think the other person would like for dinner">
+          </div>
+        </div>
+
+        <div class="task" data-task="3">
+          <div class="task-name">
+            <span class="number">04</span>
+            <span class="task-label">Find something that you’d gift your Grandma</span>
+          </div>
+          <div class="check-cell brad">
+            <input type="checkbox" aria-label="Brad: Find something that you’d gift your Grandma">
+          </div>
+          <div class="check-cell airley">
+            <input type="checkbox" aria-label="Airley: Find something that you’d gift your Grandma">
+          </div>
+        </div>
+
+        <div class="task" data-task="4">
+          <div class="task-name">
+            <span class="number">05</span>
+            <span class="task-label">Pick a sweet treat for the other person</span>
+          </div>
+          <div class="check-cell brad">
+            <input type="checkbox" aria-label="Brad: Pick a sweet treat for the other person">
+          </div>
+          <div class="check-cell airley">
+            <input type="checkbox" aria-label="Airley: Pick a sweet treat for the other person">
+          </div>
+        </div>
+
+        <div class="task" data-task="5">
+          <div class="task-name">
+            <span class="number">06</span>
+            <span class="task-label">Find something neither of you have tried before</span>
+          </div>
+          <div class="check-cell brad">
+            <input type="checkbox" aria-label="Brad: Find something neither of you have tried before">
+          </div>
+          <div class="check-cell airley">
+            <input type="checkbox" aria-label="Airley: Find something neither of you have tried before">
+          </div>
+        </div>
+
+        <div class="task" data-task="6">
+          <div class="task-name">
+            <span class="number">07</span>
+            <span class="task-label">Find the most expensive cheese — the most expensive wins!</span>
+          </div>
+          <div class="check-cell brad">
+            <input type="checkbox" aria-label="Brad: Find the most expensive cheese">
+          </div>
+          <div class="check-cell airley">
+            <input type="checkbox" aria-label="Airley: Find the most expensive cheese">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div class="footer-note">
+        Compare your finds and explain your choices
+        as you go — that’s half the fun.
+      </div>
+      <button type="button" id="reset">Reset checklist</button>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  </main>
 
   <script>
-    const scoreboard = document.getElementById("scoreboard");
-    const teams = Array.from(scoreboard.children);
+    // Saves checklist progress in this browser on this device.
+    const STORAGE_KEY = 'airley-brad-market-search-v1';
 
-    teams
-      .sort((a, b) => b.dataset.score - a.dataset.score)
-      .forEach(team => scoreboard.appendChild(team));
+    const boxes = [
+      ...document.querySelectorAll('#tasks input[type="checkbox"]')
+    ];
+
+    const rows = [...document.querySelectorAll('.task')];
+    const fill = document.getElementById('progress-fill');
+    const count = document.getElementById('progress-count');
+    const label = document.getElementById('progress-label');
+    const toast = document.getElementById('toast');
+
+    function updateProgress() {
+      const checked = boxes.filter(box => box.checked).length;
+      const total = boxes.length;
+
+      fill.style.width = `${(checked / total) * 100}%`;
+      count.textContent = `${checked} / ${total}`;
+
+      if (checked === total) {
+        label.textContent = 'You’ve completed every mission!';
+      } else if (checked === 0) {
+        label.textContent = 'Your market search is ready to begin';
+      } else {
+        label.textContent =
+          `${checked} ${checked === 1 ? 'task' : 'tasks'} completed`;
+      }
+
+      rows.forEach(row => {
+        const rowBoxes = [...row.querySelectorAll('input')];
+        row.classList.toggle(
+          'done',
+          rowBoxes.every(box => box.checked)
+        );
+      });
+    }
+
+    function save() {
+      try {
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(boxes.map(box => box.checked))
+        );
+      } catch (e) {
+        // The checklist still works if storage is unavailable.
+      }
+    }
+
+    try {
+      const saved = JSON.parse(
+        localStorage.getItem(STORAGE_KEY) || 'null'
+      );
+
+      if (Array.isArray(saved)) {
+        boxes.forEach((box, i) => {
+          box.checked = Boolean(saved[i]);
+        });
+      }
+    } catch (e) {
+      // Start with an empty checklist if saved data cannot be read.
+    }
+
+    boxes.forEach(box => {
+      box.addEventListener('change', () => {
+        save();
+        updateProgress();
+        toast.textContent = 'Progress saved on this device.';
+      });
+    });
+
+    document.getElementById('reset').addEventListener('click', () => {
+      boxes.forEach(box => {
+        box.checked = false;
+      });
+
+      save();
+      updateProgress();
+      toast.textContent = 'Checklist reset.';
+    });
+
+    updateProgress();
   </script>
-
 </body>
 </html>
-
